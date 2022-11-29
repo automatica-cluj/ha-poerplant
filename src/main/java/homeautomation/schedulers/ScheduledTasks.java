@@ -17,10 +17,13 @@
 package homeautomation.schedulers;
 
 
+import homeautomation.auroraclient.client.EnumQueryParamSampleSize;
 import homeautomation.services.PowerPlantService;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+
+import homeautomation.services.PowerplantTimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,16 +36,18 @@ public class ScheduledTasks {
 	private static final Logger LOG = LoggerFactory.getLogger(ScheduledTasks.class);
 
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-        
-       
+
         @Autowired 
         private PowerPlantService powerPlantService;
 
 	@Scheduled(fixedRate = 5000)
 	public void collectPowerData() {
-
+		PowerplantTimeUtils s;
 		LOG.info("The time is now {}", dateFormat.format(new Date()));
-                powerPlantService.collectDailyGeneratedPower();
-                
+                powerPlantService.collectDailyGeneratedPower(
+						PowerplantTimeUtils.getToday(),
+						PowerplantTimeUtils.getDayRelativeToToday(1),
+						EnumQueryParamSampleSize.HOUR
+				);
         }
 }

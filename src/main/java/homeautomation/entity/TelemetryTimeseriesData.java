@@ -4,6 +4,7 @@
  */
 package homeautomation.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -35,6 +36,7 @@ public class TelemetryTimeseriesData {
     private Long start;
     private String units;
     private Double value;
+    private String sampleSize;
     
     @ManyToOne 
     @JoinColumn(name="device_id")

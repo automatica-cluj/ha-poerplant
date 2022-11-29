@@ -8,9 +8,12 @@ import homeautomation.auroraclient.apimodel.telemetry.FimerResponseTelemetryTime
 import homeautomation.auroraclient.client.EnumQueryParamSampleSize;
 import homeautomation.auroraclient.client.FimerPowerPlantClient;
 import homeautomation.schedulers.ScheduledTasks;
+import java.time.Instant;
 import javax.annotation.PostConstruct;
 import kong.unirest.HttpResponse;
 import lombok.Getter;
+
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,9 +32,6 @@ public class PowerPlantService {
     
     private static final Logger LOG = LoggerFactory.getLogger(ScheduledTasks.class);
     
-//    @Value("${fimer.api.key}")
-//    private String auroraApiKey;
-    
     @Getter
     @Value("${fimer.plant.id}")
     private String plantId;
@@ -39,9 +39,6 @@ public class PowerPlantService {
     @Getter
     @Value("${fimer.device.id}")
     private String deviceId;
-    
-//    @Value("${fimer.api.basicauth}")
-//    private String basicAuth;
     
     private FimerPowerPlantClient fimerClient; 
     
@@ -52,25 +49,35 @@ public class PowerPlantService {
     private Environment environment;
     
     @PostConstruct
-    public void init() {        
-        
-        String x = environment.getProperty("fimer.api.key");
-        LOG.info("Fimer client loaded.");      
+    public void init() {            
+        LOG.info("Fimer client loaded."+System.getenv("fimer.api.key")+" "+System.getenv("fimer.api.basicauth")); 
         fimerClient = 
                 new FimerPowerPlantClient(environment.getProperty("fimer.api.key"), plantId, deviceId, environment.getProperty("fimer.api.basicauth"));    
         LOG.info("Fimer client loaded.");      
     }
     
-    public void collectDailyGeneratedPower(){
+    public void collectDailyGeneratedPower(Long startDate, Long endDate, EnumQueryParamSampleSize sampleSize){
+        
         if(!fimerClient.isAuthenticated()){
                     fimerClient.authorize();
         }
         else{
-                    HttpResponse<FimerResponseTelemetryTimeseries> response = fimerClient.getTelemetryTimeseriesGenerationPowerData(EnumQueryParamSampleSize.HOUR,20221122L, 20221123L);
+                    HttpResponse<FimerResponseTelemetryTimeseries> response =
+                            fimerClient.getTelemetryTimeseriesGenerationPowerData(
+                                    sampleSize,
+                                    startDate,
+                                    endDate);
                     LOG.info("RESPONSE="+response.getBody());
-                    telemetryService.writeTelemtryData(Long.valueOf(fimerClient.getDeviceId()), "power", response.getBody().getResult());
+                    telemetryService.writeTelemtryData(
+                            Long.valueOf(fimerClient.getDeviceId()),
+                            "power",
+                            sampleSize,
+                            Optional.ofNullable(response.getBody().getResult()));
         }
     }
+//       public boolean requiresUpdated(){
+//        
+//    }
 
     
 }
