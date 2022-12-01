@@ -8,7 +8,7 @@ package homeautomation.auroraclient.client;
  *
  * @author mihai
  */
-enum EnumPathParamDataType {
+public enum EnumPathParamDataType {
     POWER("power"),
     ENERGY("energy"),
     CURRENT("current"),

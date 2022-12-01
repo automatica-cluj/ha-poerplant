@@ -17,6 +17,7 @@
 package homeautomation.schedulers;
 
 
+import homeautomation.auroraclient.client.EnumPathParamDataType;
 import homeautomation.auroraclient.client.EnumQueryParamSampleSize;
 import homeautomation.services.PowerPlantService;
 import java.text.SimpleDateFormat;
@@ -47,7 +48,8 @@ public class ScheduledTasks {
                 powerPlantService.collectDailyGeneratedPower(
 						PowerplantTimeUtils.getToday(),
 						PowerplantTimeUtils.getDayRelativeToToday(1),
-						EnumQueryParamSampleSize.HOUR
+						EnumPathParamDataType.POWER,
+						EnumQueryParamSampleSize.MIN15
 				);
         }
 }

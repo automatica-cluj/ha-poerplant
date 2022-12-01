@@ -5,10 +5,11 @@
 package homeautomation.services;
 
 import homeautomation.auroraclient.apimodel.telemetry.FimerResponseTelemetryTimeseries;
+import homeautomation.auroraclient.client.EnumPathParamDataType;
 import homeautomation.auroraclient.client.EnumQueryParamSampleSize;
 import homeautomation.auroraclient.client.FimerPowerPlantClient;
 import homeautomation.schedulers.ScheduledTasks;
-import java.time.Instant;
+
 import javax.annotation.PostConstruct;
 import kong.unirest.HttpResponse;
 import lombok.Getter;
@@ -56,21 +57,22 @@ public class PowerPlantService {
         LOG.info("Fimer client loaded.");      
     }
     
-    public void collectDailyGeneratedPower(Long startDate, Long endDate, EnumQueryParamSampleSize sampleSize){
+    public void collectDailyGeneratedPower(Long startDate, Long endDate, EnumPathParamDataType dataType, EnumQueryParamSampleSize sampleSize){
         
         if(!fimerClient.isAuthenticated()){
                     fimerClient.authorize();
         }
         else{
                     HttpResponse<FimerResponseTelemetryTimeseries> response =
-                            fimerClient.getTelemetryTimeseriesGenerationPowerData(
+                            fimerClient.getTelemetryTimeseriesData(
+                                    dataType,
                                     sampleSize,
                                     startDate,
                                     endDate);
                     LOG.info("RESPONSE="+response.getBody());
-                    telemetryService.writeTelemtryData(
+                    telemetryService.writeTelemetryData(
                             Long.valueOf(fimerClient.getDeviceId()),
-                            "power",
+                            dataType,
                             sampleSize,
                             Optional.ofNullable(response.getBody().getResult()));
         }

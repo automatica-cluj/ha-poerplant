@@ -5,18 +5,12 @@
 package homeautomation.auroraclient.client;
 
 import homeautomation.auroraclient.apimodel.FimerAutheticationResponse;
-import homeautomation.auroraclient.apimodel.dailyproduction.FimerDailyValue;
 import homeautomation.auroraclient.apimodel.dailyproduction.FimerResponse;
 import homeautomation.auroraclient.apimodel.telemetry.FimerResponseTelemetryAggregated;
 import homeautomation.auroraclient.apimodel.telemetry.FimerResponseTelemetryTimeseries;
-import homeautomation.auroraclient.apimodel.dailyproduction.FimerDailyData;
-import java.util.List;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 import lombok.Getter;
-import lombok.Setter;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 /**
  *
@@ -79,9 +73,9 @@ public class FimerPowerPlantClient {
                 });
     }
 
-    public HttpResponse<FimerResponseTelemetryTimeseries> getTelemetryTimeseriesGenerationPowerData(EnumQueryParamSampleSize sampleSize, Long startDate, Long endDate) {
+    public HttpResponse<FimerResponseTelemetryTimeseries> getTelemetryTimeseriesData(EnumPathParamDataType dataType, EnumQueryParamSampleSize sampleSize, Long startDate, Long endDate) {
         //Unirest.setTimeouts(0, 0);
-        return Unirest.get("https://api.auroravision.net/api/rest/v1/stats/power/timeseries/"+deviceId+"/GenerationPower/average?sampleSize=" + sampleSize + "&startDate=" + startDate + "&endDate=" + endDate + "&timeZone=Europe/Rome")
+        return Unirest.get("https://api.auroravision.net/api/rest/v1/stats/"+dataType.toString()+"/timeseries/"+deviceId+"/GenerationPower/average?sampleSize=" + sampleSize + "&startDate=" + startDate + "&endDate=" + endDate + "&timeZone=Europe/Rome")
                 .header("X-AuroraVision-Token", auroraApiToken)
                 .asObject(FimerResponseTelemetryTimeseries.class)
                 .ifFailure(Error.class, r -> {

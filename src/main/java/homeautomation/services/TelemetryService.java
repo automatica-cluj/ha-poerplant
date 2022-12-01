@@ -5,20 +5,19 @@
 package homeautomation.services;
 
 import homeautomation.auroraclient.apimodel.telemetry.FimerTelemetryTimeseriesData;
+import homeautomation.auroraclient.client.EnumPathParamDataType;
 import homeautomation.auroraclient.client.EnumQueryParamSampleSize;
 import homeautomation.entity.Device;
 import homeautomation.entity.TelemetryTimeseriesData;
 import homeautomation.repository.DeviceRepository;
 
-import java.util.List;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import homeautomation.repository.TelemetryTimeseriesRepository;
 
 import java.time.Instant;
-import java.util.Iterator;
-import java.util.Optional;
 
 /**
  * @author mihai
@@ -32,14 +31,15 @@ public class TelemetryService {
     @Autowired
     private DeviceRepository devRepo;
 
-    public void writeTelemtryData(Long deviceId, String dataType, EnumQueryParamSampleSize sampleSize, Optional<List<FimerTelemetryTimeseriesData>> data) {
+    public void writeTelemetryData(Long deviceId, EnumPathParamDataType dataType, EnumQueryParamSampleSize sampleSize, Optional<List<FimerTelemetryTimeseriesData>> data) {
 
         if (data.isPresent()) {
-            Optional<Device> result = devRepo.findById(deviceId).or(() -> {
+
+            //TODO now create device if not exists
+            Device result = devRepo.findById(deviceId).orElseGet(() -> {
                 Device x = new Device();
                 x.setId(deviceId);
-                devRepo.save(x);
-                return Optional.of(x);
+                return devRepo.save(x);
             });
 
             Iterator<TelemetryTimeseriesData> i = data.get().stream().map(
@@ -48,28 +48,28 @@ public class TelemetryService {
                                 r.setStart(d.getStart());
                                 r.setUnits(d.getUnits());
                                 r.setValue(d.getValue());
-                                r.setDataType(dataType);
+                                r.setDataType(dataType.toString());
                                 r.setSampleSize(sampleSize.toString());
-                                r.setDevice(result.get());
+                                r.setDevice(result);
 
                                 return r;
                             })
                     .iterator();
             while (i.hasNext()) {
-                TelemetryTimeseriesData ttd = i.next();
-                repo.findByStartAndSampleSize(ttd.getStart(), sampleSize.toString()).ifPresentOrElse(record -> {
+                TelemetryTimeseriesData newEntry = i.next();
+                repo.findByStartAndSampleSize(newEntry.getStart(), sampleSize.toString()).ifPresentOrElse(record -> {
                             Optional.ofNullable(record.getValue()).ifPresentOrElse( //existing record already contains some saved data
                                     (x) -> {
-                                        if(!record.getSampleSize().equals(sampleSize.toString())){
-                                            repo.save(ttd);
-                                            System.out.println("SAVE RECORD, DIFFERENT SAMPLE SIZE");
+                                        if(!record.getSampleSize().equals(newEntry.getSampleSize().toString())||!record.getDataType().equals(newEntry.getDataType().toString())){
+                                            repo.save(newEntry);
+                                            System.out.println("SAVE RECORD, DIFFERENT SAMPLE SIZE or DATA TYPE");
                                         }else {
                                             System.out.println("DO NOTHING, VALUE EXISTS");
                                         }
                                     } //. value already exists
                                     , () -> {
-                                        if(ttd.getValue()!=null) {
-                                            record.setValue(ttd.getValue());
+                                        if(newEntry.getValue()!=null) {
+                                            record.setValue(newEntry.getValue());
                                             repo.save(record);
                                             System.out.println("REPLACE EMPTY or NULL VALUE");
                                         }
@@ -79,7 +79,7 @@ public class TelemetryService {
                         }//.present record
                         , () -> {
                             System.out.println("SAVE NEW VALUE");
-                            repo.save(ttd);
+                            repo.save(newEntry);
                         }//.not present record
                         );
             }//.while
@@ -93,8 +93,8 @@ public class TelemetryService {
      * @return
      */
     public List<TelemetryTimeseriesData> getLastUpdate(int deltaSeconds) {
-        List<TelemetryTimeseriesData> result = repo.findByValueGreaterThan(Instant.now().getEpochSecond() - deltaSeconds);
-        return result;
+        return repo.findByValueGreaterThan(Instant.now().getEpochSecond() - deltaSeconds).orElseGet(()->Collections.emptyList());
+
     }
 
 }

@@ -17,7 +17,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TelemetryTimeseriesRepository extends CrudRepository<TelemetryTimeseriesData, Integer>{
     
-    List<TelemetryTimeseriesData> findByValueGreaterThan(Long start);
+    Optional<List<TelemetryTimeseriesData>> findByValueGreaterThan(Long start);
     
     Optional<TelemetryTimeseriesData> findByStartAndSampleSize(Long start, String sampleSize);
     
