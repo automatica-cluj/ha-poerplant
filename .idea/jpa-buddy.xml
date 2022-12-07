@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="JpaBuddyIdeaProjectConfig" ddlActionDbType="mysql">
+  <component name="JpaBuddyIdeaProjectConfig" isInitGenerateDdl="true">
     <option name="defaultUnitInitialized" value="true" />
     <option name="renamerInitialized" value="true" />
+    <option name="sourceModelValue" value="Default" />
+    <option name="targetDbValue" value="e5c65e7e-73ad-43af-9715-6a4767c3705d" />
+    <option name="newEntityIdType" value="Long" />
+    <option name="newEntityIdStrategy" value="Auto" />
   </component>
 </project>

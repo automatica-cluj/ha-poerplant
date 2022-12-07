@@ -1,0 +1,118 @@
+Get list of plants:
+
+Unirest.setTimeouts(0, 0);
+HttpResponse<String> response = Unirest.get("https://api.auroravision.net/api/rest/v1/portfolio/33228237/plants")
+  .header("X-AuroraVision-Token", "X/Frlal9unZmnoyWmivCrlnl0TrWZdOB2vje730A7cuJ81yLXV5sajUei8YOkuikMhCZRlpcqtRdNDFyKq2F8yejBacr+WQxlbZXJ+C4n1Dv0flIZ15s+LUv2kir8H8IGOTKKKVKVtt5WYEnJQlng286Zy1J9RW0E/dTh9eAy1k=")
+  .header("Accept", "application/json")
+  .asString();
+ "result": {
+        "content": [
+            {
+                "plantEntityID": 33228238,
+                "plantName": "Mihai Hulea",
+                "plantDescription": "Mihai Hulea",
+                "plantState": "ACTIVE",
+                "plantStatus": "NORM"
+            }
+        ],
+        "firstPage": true,
+        "numberOfElements": 1,
+        "totalElements": 1,
+        "totalPages": 1,
+        "lastPage": true,
+        "pageSize": 50,
+        "pageNumber": 0
+    }
+}
+
+2. For a plant get additional information (like first reporting date)
+
+Unirest.setTimeouts(0, 0);
+HttpResponse<String> response = Unirest.get("https://api.auroravision.net/api/rest/v1/plant/33228238/info")
+  .header("X-AuroraVision-Token", "X/Frlal9unZmnoyWmivCrlnl0TrWZdOB2vje730A7cuJ81yLXV5sajUei8YOkuikMhCZRlpcqtRdNDFyKq2F8yejBacr+WQxlbZXJ+C4n1Dv0flIZ15s+LUv2kir8H8IGOTKKKVKVtt5WYEnJQlng286Zy1J9RW0E/dTh9eAy1k=")
+  .header("Accept", "application/json")
+  .asString();
+
+{
+    "result": {
+        "plantEntityID": 33228238,
+        "plantName": "Mihai Hulea",
+        "plantDescription": "Mihai Hulea",
+        "plantState": "ACTIVE",
+        "plantLocation": {
+            "country": "Romania",
+            "region": "Cluj",
+            "city": "Cluj-Napoca",
+            "street1": "Str Bistritei No 7",
+            "postalCode": "400430",
+            "timeZone": "Europe/Bucharest",
+            "latitude": 46.7743651,
+            "longitude": 23.6167678
+        },
+        "plantConfiguration": {
+            "systemSize": 5.0,
+            "installDate": "2022-10-03 12:00 AM +0000",
+            "firstReportedDate": "2022-10-03 07:06 AM +0000"
+        },
+        "portfolioEID": 33228237
+    }
+}
+
+
+3. For a plant get loggers
+
+Unirest.setTimeouts(0, 0);
+HttpResponse<String> response = Unirest.get("https://api.auroravision.net/api/rest/v1/plant/33228238/loggers")
+  .header("X-AuroraVision-Token", "X/Frlal9unZmnoyWmivCrlnl0TrWZdOB2vje730A7cuJ81yLXV5sajUei8YOkuikMhCZRlpcqtRdNDFyKq2F8yejBacr+WQxlbZXJ+C4n1Dv0flIZ15s+LUv2kir8H8IGOTKKKVKVtt5WYEnJQlng286Zy1J9RW0E/dTh9eAy1k=")
+  .header("Accept", "application/json")
+  .asString();
+
+{
+    "result": {
+        "plantEntityID": 33228238,
+        "loggers": [
+            {
+                "loggerEntityID": 33228214,
+                "loggerName": "18:48:CA:62:A6:D0",
+                "loggerDescription": "FIMER Wifi Logger Card",
+                "loggerState": "ACTIVE",
+                "loggerMACAddress": "18:48:ca:62:a6:d0",
+                "loggerManufacturer": "FIMER",
+                "loggerModel": "Wifi Logger Card"
+            }
+        ]
+    }
+}
+
+4. For a logger get all devices
+
+Unirest.setTimeouts(0, 0);
+HttpResponse<String> response = Unirest.get("https://api.auroravision.net/api/rest/v1/logger/33228214/devices")
+  .header("X-AuroraVision-Token", "X/Frlal9unZmnoyWmivCrlnl0TrWZdOB2vje730A7cuJ81yLXV5sajUei8YOkuikMhCZRlpcqtRdNDFyKq2F8yejBacr+WQxlbZXJ+C4n1Dv0flIZ15s+LUv2kir8H8IGOTKKKVKVtt5WYEnJQlng286Zy1J9RW0E/dTh9eAy1k=")
+  .header("Accept", "application/json")
+  .asString();
+
+ {
+    "result": {
+        "loggerEntityID": 33228214,
+        "devices": [
+            {
+                "deviceEntityID": 33228248,
+                "deviceCategory": [
+                    "Inverter"
+                ],
+                "deviceName": "inverter_001_",
+                "deviceDescription": "FIMER UNO-DM-5.0-TL-PLUS",
+                "deviceState": "ACTIVE",
+                "deviceSerialNumber": "116552-3P25-1421",
+                "deviceManufacturer": "FIMER",
+                "deviceModel": "UNO-DM-5.0-TL-PLUS",
+                "deviceFWVersion": "Version 2201A",
+                "deviceCommunicationInterface": "0",
+                "deviceRS485Address": "1",
+                "deviceFirstReportedDate": "2022-10-03 07:06 AM +0000",
+                "loggerEID": 33228214
+            }
+        ]
+    }
+}
