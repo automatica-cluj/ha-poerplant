@@ -45,7 +45,7 @@ public class PowerPlantService {
 
 
     /**
-     * Collect data from installation date (or from when last data is available) until end date.
+     * Collect data from installation date or from when last values where recorded until end date.
      *
      * @param endDate
      */
