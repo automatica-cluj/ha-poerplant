@@ -2,13 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package net.mhulea.auroraclient.client;
+package net.mhulea.auroraclient.util;
 
 /**
  *
  * @author mihai
  */
-public enum EnumPathParamMeasurementType {
+enum EnumPathParamSensorType {
     POWER("power"),
     ENERGY("energy"),
     CURRENT("current"),
@@ -22,7 +22,7 @@ public enum EnumPathParamMeasurementType {
     /**
      * @param text
      */
-    EnumPathParamMeasurementType(final String text) {
+    EnumPathParamSensorType(final String text) {
         this.text = text;
     }
 

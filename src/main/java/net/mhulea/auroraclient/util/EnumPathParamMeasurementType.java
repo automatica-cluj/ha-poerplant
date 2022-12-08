@@ -2,27 +2,27 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package net.mhulea.auroraclient.client;
+package net.mhulea.auroraclient.util;
 
 /**
- * Min5, Min15, Hour, Day, Month, Year
+ *
  * @author mihai
  */
-public enum EnumQueryParamSampleSize {
-    MIN5("Min5"),
-    MIN15("Min15"),
-    HOUR("Hour"),
-    DAY("Day"),
-    MONTH("Month"),
-    YEAR("Year")    
+public enum EnumPathParamMeasurementType {
+    POWER("power"),
+    ENERGY("energy"),
+    CURRENT("current"),
+    VOLTAGE("voltage"),
+    TEMPERATURE("temperature")
     ;
+
 
     private final String text;
 
     /**
      * @param text
      */
-    EnumQueryParamSampleSize(final String text) {
+    EnumPathParamMeasurementType(final String text) {
         this.text = text;
     }
 

@@ -1,13 +1,11 @@
 package net.mhulea.powerplant;
 
 import net.mhulea.auroraclient.apimodel.plant.FimerPlant;
-import net.mhulea.auroraclient.client.EnumPathParamMeasurementType;
-import net.mhulea.auroraclient.client.EnumQueryParamSampleSize;
 import net.mhulea.auroraclient.client.FimerClient;
+import net.mhulea.auroraclient.exception.FimerClinetException;
 import net.mhulea.powerplant.repository.DeviceRepository;
 import net.mhulea.powerplant.repository.TelemetryTimeseriesRepository;
 import net.mhulea.powerplant.service.PowerPlantService;
-import net.mhulea.powerplant.service.PowerplantTimeUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,7 +26,7 @@ public class AuroraTest {
     private PowerPlantService powerPlantService;
 
     @Test
-    public void testAuth(){
+    public void testAuth() throws FimerClinetException {
         FimerClient client = new FimerClient();
         System.out.println(client.toString());
         assertNotNull(client);
@@ -37,7 +35,7 @@ public class AuroraTest {
     }
 
     @Test
-    public void testGetPlantDetails(){
+    public void testGetPlantDetails() throws FimerClinetException {
         FimerClient client = new FimerClient();
         client.authenticate();
         FimerPlant plant = client.getPlantDetails("33228238");
@@ -45,22 +43,4 @@ public class AuroraTest {
         System.out.println(plant);
     }
 
-//    @Test
-//    public void testGetDeviceMeasurements(){
-//
-//        powerPlantService.collectTelemetryTimeseriesData(
-//                PowerplantTimeUtils.getToday(),
-//                PowerplantTimeUtils.getDayRelativeToToday(1),
-//                EnumPathParamMeasurementType.POWER,
-//                EnumQueryParamSampleSize.HOUR
-//        );
-//    }
-
-//    @Test
-//    public void testCollectInstallaitonToDate(){
-//        powerPlantService.collectTelemetryTimeseriesInstallationToDate(
-//                PowerplantTimeUtils.getDayRelativeToToday(1),
-//                EnumPathParamMeasurementType.POWER,
-//                EnumQueryParamSampleSize.DAY);
-//    }
 }

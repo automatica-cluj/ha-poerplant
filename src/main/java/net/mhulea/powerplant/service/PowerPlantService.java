@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import net.mhulea.auroraclient.apimodel.telemetry.FimerResponseTelemetryTimeseries;
-import net.mhulea.auroraclient.client.EnumPathParamMeasurementType;
-import net.mhulea.auroraclient.client.EnumQueryParamSampleSize;
+import net.mhulea.auroraclient.exception.FimerClinetException;
+import net.mhulea.auroraclient.util.EnumQueryParamSampleSize;
 import net.mhulea.powerplant.entity.Device;
 import net.mhulea.powerplant.entity.TelemetryTimeseriesData;
 import net.mhulea.powerplant.exceptions.MeasurementsAppException;
@@ -42,7 +42,7 @@ public class PowerPlantService {
     @Autowired
     private TelemetryTimeseriesRepository teleRepo;
 
-    public void collectTelemetryTimeseriesDataGeneric(String measurementType, String dataType, String valueType, String sampleSize, Long startDate, Long endDate) {
+    public void collectTelemetryTimeseriesDataGeneric(String measurementType, String dataType, String valueType, String sampleSize, Long startDate, Long endDate) throws FimerClinetException {
         Device d = devRepo.getByExternalId(Long.valueOf(fimerService.getDeviceId())).orElseThrow(()->new MeasurementsAppException("No active device found."));
         if(startDate==null&endDate!=null){ //no start date is provided collect data from installation date till present
             LocalDateTime instalationDate = d.getPlant().getFirstReportedDate();

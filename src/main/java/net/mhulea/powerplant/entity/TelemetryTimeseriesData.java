@@ -24,7 +24,7 @@ import java.util.Objects;
         name="telemetry_timeseries",
         uniqueConstraints =
         { //other constraints
-                @UniqueConstraint(name = "UniqueStartAndSampleSize", columnNames = { "start", "sampleSize" })}
+                @UniqueConstraint(name = "UniqueStartAndSampleSize", columnNames = { "start", "sampleSize", "measurementType", "valueType" })}
 )
 
 @Getter @Setter

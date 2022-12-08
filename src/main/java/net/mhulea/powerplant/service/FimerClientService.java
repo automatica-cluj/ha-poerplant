@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import net.mhulea.auroraclient.apimodel.plant.FimerPlant;
 import net.mhulea.auroraclient.client.FimerClient;
+import net.mhulea.auroraclient.exception.FimerClinetException;
 import net.mhulea.powerplant.entity.Device;
 import net.mhulea.powerplant.entity.Plant;
 import net.mhulea.powerplant.repository.DeviceRepository;
@@ -37,26 +38,31 @@ public class FimerClientService {
     public void init() {
         fimerClient = new FimerClient();
 
-        FimerPlant r = fimerClient.getPlantDetails(plantId);
+        try {
 
-        Plant plant = plantRepo.getByExternalId(Long.valueOf(plantId)).
-                orElseGet(()-> {
-                    Plant l = new Plant();
-                    l.setExternalId(Long.valueOf(plantId));
-                    l.setPlantName(r.getPlantName());
-                    l.setPlantState(r.getPlantState());
-                    l.setFirstReportedDate(r.getFirstReportedDate());
-                    return plantRepo.save(l);
-                });
+            FimerPlant r = fimerClient.getPlantDetails(plantId);
 
-        devRepo.getByExternalId(Long.valueOf(deviceId))
-                .orElseGet(()->{
-                    Device l = new Device();
-                    l.setExternalId(Long.valueOf(deviceId));
-                    plant.addDevice(l);
-                    plantRepo.save(plant);
-                    return l;
-                });
+            Plant plant = plantRepo.getByExternalId(Long.valueOf(plantId)).
+                    orElseGet(() -> {
+                        Plant l = new Plant();
+                        l.setExternalId(Long.valueOf(plantId));
+                        l.setPlantName(r.getPlantName());
+                        l.setPlantState(r.getPlantState());
+                        l.setFirstReportedDate(r.getFirstReportedDate());
+                        return plantRepo.save(l);
+                    });
+
+            devRepo.getByExternalId(Long.valueOf(deviceId))
+                    .orElseGet(() -> {
+                        Device l = new Device();
+                        l.setExternalId(Long.valueOf(deviceId));
+                        plant.addDevice(l);
+                        plantRepo.save(plant);
+                        return l;
+                    });
+        } catch (FimerClinetException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

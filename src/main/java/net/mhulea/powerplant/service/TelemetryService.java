@@ -7,8 +7,8 @@ package net.mhulea.powerplant.service;
 import java.util.*;
 
 import net.mhulea.auroraclient.apimodel.telemetry.FimerTelemetryTimeseriesData;
-import net.mhulea.auroraclient.client.EnumPathParamMeasurementType;
-import net.mhulea.auroraclient.client.EnumQueryParamSampleSize;
+import net.mhulea.auroraclient.util.EnumPathParamMeasurementType;
+import net.mhulea.auroraclient.util.EnumQueryParamSampleSize;
 import net.mhulea.powerplant.entity.Device;
 import net.mhulea.powerplant.exceptions.MeasurementsAppException;
 import net.mhulea.powerplant.repository.DeviceRepository;
