@@ -8,7 +8,7 @@ package net.mhulea.auroraclient.client;
  *
  * @author mihai
  */
-public enum EnumPathParamDataType {
+public enum EnumPathParamMeasurementType {
     POWER("power"),
     ENERGY("energy"),
     CURRENT("current"),
@@ -22,7 +22,7 @@ public enum EnumPathParamDataType {
     /**
      * @param text
      */
-    EnumPathParamDataType(final String text) {
+    EnumPathParamMeasurementType(final String text) {
         this.text = text;
     }
 

@@ -1,11 +1,9 @@
 package net.mhulea.powerplant;
 
 import net.mhulea.auroraclient.apimodel.plant.FimerPlant;
-import net.mhulea.auroraclient.client.EnumPathParamDataType;
+import net.mhulea.auroraclient.client.EnumPathParamMeasurementType;
 import net.mhulea.auroraclient.client.EnumQueryParamSampleSize;
 import net.mhulea.auroraclient.client.FimerClient;
-import net.mhulea.powerplant.entity.Device;
-import net.mhulea.powerplant.entity.TelemetryTimeseriesData;
 import net.mhulea.powerplant.repository.DeviceRepository;
 import net.mhulea.powerplant.repository.TelemetryTimeseriesRepository;
 import net.mhulea.powerplant.service.PowerPlantService;
@@ -13,8 +11,6 @@ import net.mhulea.powerplant.service.PowerplantTimeUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -49,22 +45,22 @@ public class AuroraTest {
         System.out.println(plant);
     }
 
-    @Test
-    public void testGetDeviceMeasurements(){
+//    @Test
+//    public void testGetDeviceMeasurements(){
+//
+//        powerPlantService.collectTelemetryTimeseriesData(
+//                PowerplantTimeUtils.getToday(),
+//                PowerplantTimeUtils.getDayRelativeToToday(1),
+//                EnumPathParamMeasurementType.POWER,
+//                EnumQueryParamSampleSize.HOUR
+//        );
+//    }
 
-        powerPlantService.collectTelemetryTimeseriesData(
-                PowerplantTimeUtils.getToday(),
-                PowerplantTimeUtils.getDayRelativeToToday(1),
-                EnumPathParamDataType.POWER,
-                EnumQueryParamSampleSize.HOUR
-        );
-    }
-
-    @Test
-    public void testCollectInstallaitonToDate(){
-        powerPlantService.collectTelemetryTimeseriesInstallationToDate(
-                PowerplantTimeUtils.getDayRelativeToToday(1),
-                EnumPathParamDataType.POWER,
-                EnumQueryParamSampleSize.DAY);
-    }
+//    @Test
+//    public void testCollectInstallaitonToDate(){
+//        powerPlantService.collectTelemetryTimeseriesInstallationToDate(
+//                PowerplantTimeUtils.getDayRelativeToToday(1),
+//                EnumPathParamMeasurementType.POWER,
+//                EnumQueryParamSampleSize.DAY);
+//    }
 }

@@ -46,7 +46,7 @@ class DemoApplicationTests {
 
 
         PlantDto pdto = new PlantDto();//2L,"ABC");
-        pdto.setId(new Long(2L));
+        pdto.setId(2L);
         pdto.setOwner("ABC");
 
         Plant plant = MapperPlant.INSTANCE.plantDtoToPlant(pdto);

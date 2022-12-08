@@ -10,9 +10,7 @@ import net.mhulea.auroraclient.apimodel.dailyproduction.FimerResponse;
 import net.mhulea.auroraclient.apimodel.plant.FimerPlant;
 import net.mhulea.auroraclient.apimodel.telemetry.FimerResponseTelemetryAggregated;
 import net.mhulea.auroraclient.apimodel.telemetry.FimerResponseTelemetryTimeseries;
-import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
-import lombok.Getter;
 import net.mhulea.powerplant.exceptions.MeasurementsAppException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,7 +102,30 @@ public class FimerClient {
                 }).getBody();
     }
 
-    public FimerResponseTelemetryTimeseries getTelemetryTimeseriesData(String deviceId, EnumPathParamDataType dataType, EnumQueryParamSampleSize sampleSize, Long startDate, Long endDate) {
+    public FimerResponseTelemetryTimeseries getTelemetryTimeseriesDataGeneric(String deviceId, String measurementType, String valueType, String dataType, String sampleSize, Long startDate, Long endDate) {
+        if(!isAuthenticated())
+            authenticate();
+        if(!FimerMeasurementTypesValueTypes.isValueTypeValid(valueType)||!FimerMeasurementTypesValueTypes.isMeasurementDataPairValid(measurementType,dataType))
+            throw new MeasurementsAppException("Request cannot be complete. Wrong parameters provided.");
+
+        return Unirest.get("https://api.auroravision.net/api/rest/v1/stats/{measurementType}/timeseries/{entityId}/{dataType}/{valueType}?sampleSize=" + sampleSize + "&startDate=" + startDate + "&endDate=" + endDate + "&timeZone=Europe/Rome")
+                .header("X-AuroraVision-Token", auroraApiToken)
+                .routeParam("measurementType", measurementType)
+                .routeParam("entityId", deviceId)
+                .routeParam("valueType", valueType)
+                .routeParam("dataType", dataType)
+                .asObject(FimerResponseTelemetryTimeseries.class)
+                .ifFailure(Error.class, r -> {
+                    if (r.getStatus() == 401) {
+                        auroraApiToken = null;
+                        LOG.info("ERR AUTHORIZATION");
+                    } else {
+                        LOG.info("UNEXPECTED ERROR " + r.getStatus() + " " + r.getStatusText());
+                    }
+                }).getBody();
+    }
+
+        public FimerResponseTelemetryTimeseries getTelemetryTimeseriesData(String deviceId, EnumPathParamMeasurementType dataType, EnumQueryParamSampleSize sampleSize, Long startDate, Long endDate) {
         if(!isAuthenticated())
             authenticate();
         return Unirest.get("https://api.auroravision.net/api/rest/v1/stats/"+dataType+"/timeseries/"+deviceId.toString()+"/GenerationPower/average?sampleSize=" + sampleSize + "&startDate=" + startDate + "&endDate=" + endDate + "&timeZone=Europe/Rome")

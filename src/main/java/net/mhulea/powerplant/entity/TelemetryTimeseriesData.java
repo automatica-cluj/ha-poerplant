@@ -35,6 +35,8 @@ public class TelemetryTimeseriesData {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer id;
     private String dataType;
+    private String measurementType;
+    private String valueType;
     private Long start;
     private String units;
     private Double value;

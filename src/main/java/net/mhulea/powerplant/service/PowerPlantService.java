@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import net.mhulea.auroraclient.apimodel.telemetry.FimerResponseTelemetryTimeseries;
-import net.mhulea.auroraclient.client.EnumPathParamDataType;
+import net.mhulea.auroraclient.client.EnumPathParamMeasurementType;
 import net.mhulea.auroraclient.client.EnumQueryParamSampleSize;
 import net.mhulea.powerplant.entity.Device;
 import net.mhulea.powerplant.entity.TelemetryTimeseriesData;
@@ -42,47 +42,36 @@ public class PowerPlantService {
     @Autowired
     private TelemetryTimeseriesRepository teleRepo;
 
+    public void collectTelemetryTimeseriesDataGeneric(String measurementType, String dataType, String valueType, String sampleSize, Long startDate, Long endDate) {
+        Device d = devRepo.getByExternalId(Long.valueOf(fimerService.getDeviceId())).orElseThrow(()->new MeasurementsAppException("No active device found."));
+        if(startDate==null&endDate!=null){ //no start date is provided collect data from installation date till present
+            LocalDateTime instalationDate = d.getPlant().getFirstReportedDate();
+            Optional<TelemetryTimeseriesData> r =
+                    teleRepo.findFirstByDeviceAndSampleSizeAndValueNotNullOrderByStartDesc(d,EnumQueryParamSampleSize.HOUR.toString());
 
-
-    /**
-     * Collect data from installation date or from when last values where recorded until end date.
-     *
-     * @param endDate
-     */
-    public void collectTelemetryTimeseriesInstallationToDate(Long endDate, EnumPathParamDataType dataType, EnumQueryParamSampleSize sampleSize){
-
-        Device d = devRepo.getByExternalId(Long.valueOf(fimerService.getDeviceId())).orElseThrow(()->new MeasurementsAppException("No device found."));
-        LocalDateTime instalationDate = d.getPlant().getFirstReportedDate();
-        Optional<TelemetryTimeseriesData> r =
-                teleRepo.findFirstByDeviceAndSampleSizeAndValueNotNullOrderByStartDesc(d,EnumQueryParamSampleSize.HOUR.toString());
-
-        Long startDate = r.map(t -> PowerplantTimeUtils.getDayFromUnixEpoch(r.get().getStart()))
-                .orElse(PowerplantTimeUtils.getFormatedDate(instalationDate));
-
-        if(endDate>startDate){
-            collectTelemetryTimeseriesData(startDate,endDate,dataType, sampleSize);
-        }else{
-            throw new MeasurementsAppException("Cannot process provided start and end dates. End date should be higher than start date.");
+            startDate = r.map(t -> PowerplantTimeUtils.getDayFromUnixEpoch(r.get().getStart()))
+                    .orElse(PowerplantTimeUtils.getFormatedDate(instalationDate));
         }
 
-    }
+        if(startDate==null && endDate==null){ //no date is provided, collect data for today only
+            startDate = PowerplantTimeUtils.getToday();
+            endDate = PowerplantTimeUtils.getDayRelativeToToday(1);
+        }
 
-    public void collectTelemetryTimeseriesData(Long startDate, Long endDate, EnumPathParamDataType dataType, EnumQueryParamSampleSize sampleSize) {
+        if(startDate>endDate)
+            throw new MeasurementsAppException("Cannot process request. End date should be higher than start date.");
 
-        FimerResponseTelemetryTimeseries response =
-                fimerService.getFimerClient().getTelemetryTimeseriesData(
-                        fimerService.getDeviceId(),
-                        dataType,
-                        sampleSize,
-                        startDate,
-                        endDate);
-        LOG.info("RESPONSE=" + response);
+        FimerResponseTelemetryTimeseries response =  fimerService.getFimerClient().
+                getTelemetryTimeseriesDataGeneric(d.getExternalId().toString(),measurementType,valueType,dataType,sampleSize,startDate,endDate);
+
         telemetryService.writeTelemetryData(
                 Long.valueOf(fimerService.getDeviceId()),
                 dataType,
+                measurementType,
+                valueType,
                 sampleSize,
+                startDate,
+                endDate,
                 Optional.ofNullable(response.getResult()));
     }
-
-
 }
