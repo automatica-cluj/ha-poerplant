@@ -6,9 +6,9 @@
 ## Introduction
 The project is a draft\WIP small app which is using Aurora Vision API to collect telemetry data from ABB\Fimer inverters and save it in a MySQL database.
 
-Swagger API - https://documentation.auroravision.net/index.html%3Fp=74.html
+Refference Fimer API documentation can be accessed here: https://documentation.auroravision.net/index.html%3Fp=74.html
 
-Frameworks & libraries:
+Used frameworks & libraries:
 - Spring Rest Data and Spring Data JPA
 - Spring Boot
 - Lombok - to generate boilerplate code
@@ -40,7 +40,7 @@ After successful start application exposes a Swagger API documentation on: http:
 
 The application expose a single RPC HTTP GET which allow user to request getting measurements data and populating database. 
 
-### Limitations 
+## Limitations 
 
 In current draft version the application works with a single device. Is not possible to configure and handle multiple inverters at the same time. 
 
