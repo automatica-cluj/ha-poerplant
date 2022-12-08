@@ -24,7 +24,7 @@ public class FimerMeasurementTypesValueTypes {
             entry("current", new String[]{"Current", "DCCurrent"})
     );
 
-    public static final String[] VALUE_TYPES={"maximum", "minimum", "average"};
+    public static final String[] VALUE_TYPES={"maximum", "minimum", "average", "cumulative", "delta"};
 
     public static boolean isMeasurementDataPairValid(String measurementType, String dataType){
         return Arrays.stream(MEASUREMENT_DATA_TYPES.get(measurementType)).filter(Predicate.isEqual(dataType)).count()==1;
