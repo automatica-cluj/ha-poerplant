@@ -38,7 +38,12 @@ As a maven based Spring Boot project this can be run with following command:
 
 After successful start application exposes a Swagger API documentation on: http://localhost:8080/swagger-ui/index.html# 
 
-The application expose a single RPC HTTP GET which allow user to request getting measurements data and populating database. 
+The application expose a single RPC HTTP GET which allow user to request different type of measurements data and populating database.
+
+Example curl invoking the service:
+- curl -X 'GET' \
+  'http://localhost:8080/stats/timeseries/power/GenerationPower/average?sampleSize=Hour&startDate=20221208&endDate=20221209' \
+  -H 'accept: application/hal+json'
 
 ## Limitations 
 

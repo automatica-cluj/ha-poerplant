@@ -18,7 +18,7 @@ public class TelemetryController {
     private PowerPlantService plantService;
 
     /**
-     * Update telemetry data based on speciffic parameters starting from initial reporting date till present.
+     * Update telemetry data based on specific parameters starting from initial reporting date till present.
      *
      * @param measurementType
      * @param dataType
@@ -27,7 +27,7 @@ public class TelemetryController {
      * @return
      */
     @GetMapping("/stats/timeseries/{measurementType}/{dataType}/{valueType}")
-    public ResponseEntity<String> requestUpdateTelemetryData( @Parameter(required = true, description = "Possible values: energy, current, temperature, wind, frequency, voltage, power")
+    public ResponseEntity<PowerplantResponse> requestUpdateTelemetryData( @Parameter(required = true, description = "Possible values: energy, current, temperature, wind, frequency, voltage, power")
                                                                   @PathVariable("measurementType") String measurementType,
                                                               @Parameter(required = true, description = "Possible values for energy: GenerationEnergy, DCGenerationEnergy, Insolation, StorageInEnergy, StorageOutEnergy, GridEnergyExport, GridEnergyImport, SelfConsumedEnergy, ActiveEnergyEV, SessionEnergyEV <br> Possible values for current : Current, DCCurrent <br> Possible values for temperature : CellTemp, AmbientTemp <br> Possible values for wind: WindDirection, WindSpeed <br> Possible values for frequency: LineFrequency <br> Possible values for voltage: Voltage, DCVoltage <br> Possible values for power: GenerationPower, DCGenerationPower, Irradiance, GridPowerExport, StoredPower, ActivePowerEV")
                                                                 @PathVariable("dataType") String dataType,
@@ -45,11 +45,11 @@ public class TelemetryController {
         try {
             plantService.collectTelemetryTimeseriesDataGeneric(measurementType, dataType, valueType,sampleSize, startDate, endDate);
             return new ResponseEntity<>(
-                    "Request processes.",
+                    new PowerplantResponse("Request processed!"),
                     HttpStatus.OK);
         } catch (FimerClinetException e) {
             return new ResponseEntity<>(
-                    e.getMessage(),
+                    new PowerplantResponse(e.getMessage()),
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
