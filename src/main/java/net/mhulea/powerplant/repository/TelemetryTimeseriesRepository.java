@@ -22,7 +22,7 @@ public interface TelemetryTimeseriesRepository extends CrudRepository<TelemetryT
     
     Optional<List<TelemetryTimeseriesData>> findByValueGreaterThan(Long start);
     
-    Optional<TelemetryTimeseriesData> findByStartAndSampleSize(Long start, String sampleSize);
+    Optional<TelemetryTimeseriesData> findByStartAndSampleSizeAndMeasurementType(Long start, String sampleSize, String measurementType);
 
     Optional<TelemetryTimeseriesData> findFirstByDeviceAndSampleSizeAndValueNotNullOrderByStartDesc(Device d,String sampleSize);
 }
